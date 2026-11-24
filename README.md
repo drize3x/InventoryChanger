@@ -1,74 +1,89 @@
-# cs2-inventory-changer
+# Inventory Changer
 
-Client-side inventory and skin changer for Counter-Strike 2.
+In-game overlay menu with a client-side inventory and skin changer for Counter-Strike 2.
 
-[![License](https://img.shields.io/github/license/USER/REPO)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/USER/REPO)](https://github.com/USER/REPO/releases)
-[![Build](https://img.shields.io/github/actions/workflow/status/USER/REPO/build.yml)](https://github.com/USER/REPO/actions)
-
-Changes how items appear in your own game client. Nothing is sent to Valve, nothing is added to your Steam account, and other players do not see the changes.
+Changes apply to your own game client only. Nothing is sent to Valve and nothing is added to your Steam account.
 
 > [!WARNING]
-> This tool modifies the game client. Using it may result in a VAC ban or other action against your account. Do not use it on VAC-secured servers or on an account you care about. See [Disclaimer](#disclaimer).
+> This project modifies the game client. Using it can result in a VAC ban or other action against your account. Do not use it on VAC-secured servers or on an account you care about. See [Disclaimer](#disclaimer).
+
+This repository is source only. There are no prebuilt binaries, so you build it yourself.
 
 ## Features
 
-- Skins for weapons, knives and gloves, including wear, pattern seed and StatTrak
-- Agents, music kits, pins and coins
-- Config profiles that can be saved, loaded and exported
-- [feature]
+- Inventory and skin changer: [weapons, knives, gloves, agents, ...]
+- Item preview
+- Watermark HUD and spectator list
+- Configurable keybinds with context-aware handling
+- Custom hitsounds and font rendering via FreeType
+- Config profiles
 
 ## Requirements
 
 - Windows 10 or 11, x64
-- CS2, launched with `-insecure`
-- [runtime, e.g. Visual C++ Redistributable 2022]
+- Visual Studio 2022 with the **Desktop development with C++** workload
+- A Direct3D-capable GPU [adjust if you use another backend]
 
-## Installation
-
-1. Download the latest build from [Releases](https://github.com/USER/REPO/releases).
-2. Extract the archive.
-3. Launch CS2 with `-insecure`.
-4. Run `[executable]`.
-
-## Usage
-
-| Key      | Action               |
-| -------- | -------------------- |
-| `Insert` | Open / close menu    |
-| `[key]`  | [action]             |
-
-Configs are stored in `%APPDATA%\[folder]\configs`.
-
-## Building from source
-
-Requires Visual Studio 2022 with the *Desktop development with C++* workload.
+## Building
 
 ```bash
-git clone https://github.com/USER/REPO.git
-cd REPO
-cmake -B build -A x64
-cmake --build build --config Release
+git clone https://github.com/USER/OverlayMenu.git
 ```
 
-Output: `build/Release/[name].dll`
+1. Open `OverlayMenu.sln` in Visual Studio.
+2. Select the `Release | x64` configuration.
+3. Build the solution (`Ctrl+Shift+B`).
 
-## How it works
+Dependencies are vendored under `third_party/`, so nothing needs to be installed separately.
 
-[2-4 sentences: how the changer finds and replaces item data in memory, what it hooks, how it stays client-side. Skip this section if you'd rather not document internals.]
+Output goes to `build/x64/`.
+
+## Configuration
+
+Settings are read from `OverlayMenu.ini`. Profiles and assets live in `assets/`.
+
+| Key      | Action            |
+| -------- | ----------------- |
+| `Insert` | Open / close menu |
+| `[key]`  | [action]          |
+
+## Project layout
+
+```
+assets/        fonts, hitsounds, logos, profile data
+shaders/       HLSL shaders (menu_material.hlsl) and originals
+src/
+  core/        [short description]
+  inventory/   inventory and skin changer logic
+  platform/    [short description]
+  preview/     item preview
+  render/      rendering
+  ui/          menu and HUD
+tests/         standalone C++ tests and parity notes
+third_party/   FreeType, MinHook
+```
+
+## Tests
+
+Tests are plain C++ files under `tests/`, one per area (item color, keybind context, native signatures, spectators, watermark HUD, UI dump parity, frost environment). [How to run them, e.g. a separate project or build configuration.]
 
 ## Known issues
 
-- Game updates can break offsets until the next release.
-- Changes are visible only to you and reset on restart unless a config is loaded.
+- Game updates can break signatures until they are updated.
+- [other limitations]
 
 ## Contributing
 
-Issues and pull requests are welcome. For larger changes, open an issue first so we can agree on the approach.
+Issues and pull requests are welcome. For larger changes, open an issue first so we can agree on the approach. Code style is defined in `.clang-format`.
 
 ## Disclaimer
 
 This project is not affiliated with or endorsed by Valve Corporation. Counter-Strike and Steam are trademarks of Valve Corporation. The software is provided as is, without warranty. You are responsible for how you use it, including any account penalties.
+
+## Third-party
+
+- [FreeType](https://freetype.org)
+- [MinHook](https://github.com/TsudaKageyu/minhook)
 
 ## License
 
